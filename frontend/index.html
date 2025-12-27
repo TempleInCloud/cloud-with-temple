@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cloud With Temple — Serverless Blog</title>
+
+  <style>
+    :root {
+      --bg1: #071022;
+      --bg2: #0a1630;
+      --card: rgba(255,255,255,0.08);
+      --card2: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.68);
+      --shadow: 0 12px 30px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% 10%, rgba(80,120,255,.20), transparent 60%),
+        radial-gradient(1000px 600px at 90% 30%, rgba(40,200,255,.12), transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap { max-width: 1100px; margin: 28px auto 60px; padding: 0 18px; }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: .2px; }
+    .brand p { margin: 6px 0 0; color: var(--muted); max-width: 720px; line-height: 1.4; }
+
+    .pillRow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
+    .pill {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--muted);
+      user-select: none;
+      backdrop-filter: blur(10px);
+    }
+    .pill strong { color: var(--text); font-weight: 700; }
+    .pill.btnLike { cursor: pointer; color: var(--text); }
+    .pill.btnLike:hover { background: rgba(255,255,255,0.10); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .pillRow { justify-content: flex-start; }
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+    .cardHeader {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .cardHeader h2 { margin: 0; font-size: 16px; letter-spacing: .2px; }
+    .cardBody { padding: 16px; }
+
+    .muted { color: var(--muted); }
+
+    .field { margin: 10px 0 12px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input, textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.20);
+      padding: 10px 12px;
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 650;
+      font-size: 14px;
+      transition: transform .05s ease, background .12s ease;
+      user-select: none;
+    }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btnSmall { padding: 8px 12px; border-radius: 11px; font-size: 13px; font-weight: 650; }
+
+    .status {
+      border: 1px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .postsList { display: flex; flex-direction: column; gap: 12px; }
+    .post {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--card2);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: background .12s ease, transform .05s ease;
+      position: relative;
+    }
+    .post:hover { background: rgba(255,255,255,0.10); }
+    .post:active { transform: translateY(1px); }
+    .post h3 { margin: 0 0 6px; font-size: 15px; }
+    .post p { margin: 0; color: var(--muted); line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .post small { display: block; margin-top: 10px; color: rgba(255,255,255,0.55); }
+
+    .postActions { margin-top: 12px; display: flex; gap: 10px; }
+
+    .footerRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    /* FULLSCREEN MODAL */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      padding: 20px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modalOverlay.show{ display: flex; }
+
+    .modalCard{
+      width: min(900px, 95vw);
+      max-height: 90vh;
+      overflow: auto;
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(15, 20, 35, 0.92);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+    .modalTop{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .modalTitle{
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+    .modalMeta{
+      opacity: .75;
+      font-size: 13px;
+      margin: 10px 0 14px;
+    }
+    .modalContent{
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+      color: rgba(255,255,255,.82);
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>🚀 Cloud With Temple</h1>
+        <p>A tiny serverless blog (API Gateway + Lambda + DynamoDB) — hosted on S3 + CloudFront</p>
+      </div>
+
+      <div class="pillRow">
+        <div class="pill"><strong>Public blog</strong> <span class="muted">(read-only)</span></div>
+        <div id="publicTag" class="pill"><strong>Protected</strong></div>
+        <div id="toggleAdminBtn" class="pill btnLike">Admin mode</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Admin card -->
+      <div id="adminCard" class="card" style="display:none;">
+        <div class="cardHeader">
+          <h2>Admin</h2>
+          <span class="pill" style="padding:6px 10px;">Create / Delete</span>
+        </div>
+        <div class="cardBody">
+          <p class="muted" style="margin-top:0;">
+            Admin mode lets you create and delete posts. The public site remains read-only.
+          </p>
+
+          <div class="field">
+            <label for="adminToken">Admin token</label>
+            <input id="adminToken" type="password" placeholder="Paste admin token" />
+          </div>
+
+          <div class="field">
+            <label for="title">Title</label>
+            <input id="title" placeholder="Post title" />
+          </div>
+
+          <div class="field">
+            <label for="content">Content</label>
+            <textarea id="content" placeholder="Write something..."></textarea>
+          </div>
+
+          <button id="createBtn" class="btn" type="button">Create post</button>
+
+          <div id="adminStatus" class="status">
+            Admin is disabled on the public page by default.
+          </div>
+
+          <div class="status" style="margin-top:10px;">
+            <strong>Tip:</strong> Keep your token private. For a real production setup, you'd use Cognito/IAM auth instead of a static token.
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts card -->
+      <div class="card">
+        <div class="cardHeader">
+          <h2>Posts</h2>
+          <button id="refreshBtn" class="btn btnSmall" type="button">Refresh</button>
+        </div>
+
+        <div class="cardBody">
+          <p id="postsStatus" class="muted" style="margin:0 0 10px 0;"></p>
+          <div id="postsList" class="postsList"></div>
+
+          <div class="footerRow">
+            <div class="muted" style="font-size:13px;">Tip: Click a post to read full-screen.</div>
+            <button id="loadMoreBtn" class="btn btnSmall" type="button" style="display:none;">Load more</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN POST MODAL -->
+  <div id="postModal" class="modalOverlay" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalTop">
+        <h2 id="modalTitle" class="modalTitle">Post</h2>
+        <button id="closeModalBtn" class="btn btnSmall" type="button">Close ✕</button>
+      </div>
+      <div id="modalMeta" class="modalMeta"></div>
+      <div id="modalContent" class="modalContent"></div>
+
+      <div id="modalActions" class="postActions" style="display:none;">
+        <button id="modalDeleteBtn" class="btn btnSmall" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * CONFIG
+     ***********************/
+    // IMPORTANT: Use the BASE stage URL only (ends with /dev).
+    const API_BASE = "https://jbmx6p82o1.execute-api.us-east-1.amazonaws.com/dev";
+    const POSTS_URL = `${API_BASE}/posts`;
+
+    const PAGE_SIZE = 10;
+
+    /***********************
+     * ELEMENTS
+     ***********************/
+    const postsStatusEl = document.getElementById("postsStatus");
+    const postsListEl = document.getElementById("postsList");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    const adminCard = document.getElementById("adminCard");
+    const toggleAdminBtn = document.getElementById("toggleAdminBtn");
+    const publicTag = document.getElementById("publicTag");
+
+    const adminTokenEl = document.getElementById("adminToken");
+    const titleEl = document.getElementById("title");
+    const contentEl = document.getElementById("content");
+    const createBtn = document.getElementById("createBtn");
+    const adminStatusEl = document.getElementById("adminStatus");
+
+    // Modal elements
+    const postModal = document.getElementById("postModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const modalTitleEl = document.getElementById("modalTitle");
+    const modalMetaEl = document.getElementById("modalMeta");
+    const modalContentEl = document.getElementById("modalContent");
+    const modalActionsEl = document.getElementById("modalActions");
+    const modalDeleteBtn = document.getElementById("modalDeleteBtn");
+
+    /***********************
+     * STATE
+     ***********************/
+    let adminVisible = false;
+    let nextToken = null;
+    let isLoading = false;
+
+    // currently opened post in modal
+    let openPost = null;
+
+    /***********************
+     * HELPERS
+     ***********************/
+    function setPostsStatus(msg) {
+      postsStatusEl.textContent = msg || "";
+    }
+
+    function setAdminStatus(msg, type = "neutral") {
+      adminStatusEl.textContent = msg || "";
+
+      const colors = {
+        good: "rgba(48,209,88,.85)",
+        bad: "rgba(255,69,58,.85)",
+        warn: "rgba(255,214,10,.85)",
+        neutral: "rgba(255,255,255,.35)"
+      };
+
+      adminStatusEl.style.borderColor = colors[type] || colors.neutral;
+      adminStatusEl.style.color = type === "neutral" ? "rgba(255,255,255,.70)" : "rgba(255,255,255,.92)";
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "").replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[m]));
+    }
+
+    function truncateText(text, maxLen = 140) {
+      const t = String(text || "");
+      if (t.length <= maxLen) return t;
+      return t.slice(0, maxLen).trimEnd() + "…";
+    }
+
+    /***********************
+     * MODAL (FULLSCREEN READER)
+     ***********************/
+    function openPostModal(post) {
+      openPost = post;
+
+      modalTitleEl.textContent = post?.title || "Untitled";
+      modalMetaEl.textContent = post?.createdAt ? `Created: ${post.createdAt}` : "";
+      modalContentEl.textContent = post?.content || "";
+
+      // delete button visible only in admin mode
+      modalActionsEl.style.display = adminVisible ? "flex" : "none";
+
+      postModal.classList.add("show");
+      postModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closePostModal() {
+      openPost = null;
+      postModal.classList.remove("show");
+      postModal.setAttribute("aria-hidden", "true");
+    }
+
+    closeModalBtn.addEventListener("click", closePostModal);
+
+    // click outside closes
+    postModal.addEventListener("click", (e) => {
+      if (e.target === postModal) closePostModal();
+    });
+
+    // Esc closes
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && postModal.classList.contains("show")) closePostModal();
+    });
+
+    /***********************
+     * RENDER
+     ***********************/
+    function renderPosts(items, { append = false } = {}) {
+      if (!append) postsListEl.innerHTML = "";
+
+      items.forEach((p) => {
+        const card = document.createElement("div");
+        card.className = "post";
+
+        const title = p.title || "Untitled";
+        const preview = truncateText(p.content || "", 140);
+
+        card.innerHTML = `
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(preview)}</p>
+          ${p.createdAt ? `<small>${escapeHtml(p.createdAt)}</small>` : ""}
+        `;
+
+        // click card -> open full-screen modal
+        card.addEventListener("click", () => openPostModal(p));
+
+        // admin-only inline delete button
+        if (adminVisible) {
+          const actions = document.createElement("div");
+          actions.className = "postActions";
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "btn btnSmall";
+          delBtn.textContent = "Delete";
+          delBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // prevent opening modal
+            deletePost(p.postID);
+          });
+
+          actions.appendChild(delBtn);
+          card.appendChild(actions);
+        }
+
+        postsListEl.appendChild(card);
+      });
+    }
+
+    /***********************
+     * LOAD POSTS (PAGINATION)
+     ***********************/
+    async function loadPosts({ append = false } = {}) {
+      if (isLoading) return;
+      isLoading = true;
+
+      try {
+        setPostsStatus(append ? "Loading more..." : "Loading posts...");
+
+        const url = new URL(POSTS_URL);
+        url.searchParams.set("limit", String(PAGE_SIZE));
+        if (append && nextToken) url.searchParams.set("nextToken", nextToken);
+
+        const res = await fetch(url.toString(), { method: "GET" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if (!append) {
+          postsListEl.innerHTML = "";
+        }
+
+        if (items.length === 0 && !append) {
+          setPostsStatus("No posts yet. Check back soon.");
+          nextToken = null;
+          loadMoreBtn.style.display = "none";
+          return;
+        }
+
+        renderPosts(items, { append });
+
+        nextToken = data.nextToken || null;
+        loadMoreBtn.style.display = nextToken ? "inline-flex" : "none";
+
+        setPostsStatus("You're up to date.");
+      } catch (err) {
+        console.error("Failed to load posts:", err);
+        setPostsStatus("Unable to load posts right now. Please try again later.");
+        if (!append) postsListEl.innerHTML = "";
+        nextToken = null;
+        loadMoreBtn.style.display = "none";
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    refreshBtn.addEventListener("click", () => {
+      nextToken = null;
+      loadMoreBtn.style.display = "none";
+      loadPosts({ append: false });
+    });
+
+    loadMoreBtn.addEventListener("click", () => {
+      if (!nextToken) return;
+      loadPosts({ append: true });
+    });
+
+    /***********************
+     * ADMIN MODE
+     ***********************/
+    function updateAdminUI() {
+      adminCard.style.display = adminVisible ? "block" : "none";
+      toggleAdminBtn.textContent = adminVisible ? "Hide admin" : "Admin mode";
+
+      publicTag.innerHTML = adminVisible
+        ? "<strong>Admin enabled</strong> <span class='muted'>(local view)</span>"
+        : "<strong>Protected</strong>";
+
+      // if modal open, update delete visibility there too
+      if (postModal.classList.contains("show")) {
+        modalActionsEl.style.display = adminVisible ? "flex" : "none";
+      }
+    }
+
+    toggleAdminBtn.addEventListener("click", () => {
+      adminVisible = !adminVisible;
+
+      setAdminStatus(
+        adminVisible
+          ? "Admin mode enabled. Paste token to create/delete posts."
+          : "Admin is disabled on the public page by default.",
+        "neutral"
+      );
+
+      updateAdminUI();
+
+      // re-render posts so delete buttons show/hide
+      nextToken = null;
+      loadMoreBtn.style.display = "none";
+      loadPosts({ append: false });
+    });
+
+    /***********************
+     * CREATE POST (ADMIN)
+     ***********************/
+    async function createPost() {
+      const token = (adminTokenEl.value || "").trim();
+      const title = (titleEl.value || "").trim();
+      const content = (contentEl.value || "").trim();
+
+      if (!token) {
+        setAdminStatus("Please paste your admin token.", "warn");
+        return;
+      }
+      if (!title || !content) {
+        setAdminStatus("Title and content are required.", "warn");
+        return;
+      }
+
+      createBtn.disabled = true;
+      setAdminStatus("Creating post...", "neutral");
+
+      try {
+        const res = await fetch(POSTS_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": token
+          },
+          body: JSON.stringify({ title, content })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          console.error("Create post failed:", res.status, data);
+          setAdminStatus(`Failed to create post (${res.status}). Check token / API settings.`, "bad");
+          return;
+        }
+
+        setAdminStatus("Post created successfully ✅", "good");
+        titleEl.value = "";
+        contentEl.value = "";
+
+        // refresh list from page 1
+        nextToken = null;
+        loadMoreBtn.style.display = "none";
+        await loadPosts({ append: false });
+      } catch (err) {
+        console.error("Create post error:", err);
+        setAdminStatus("Network error. Please try again.", "bad");
+      } finally {
+        createBtn.disabled = false;
+      }
+    }
+
+    createBtn.addEventListener("click", createPost);
+
+    /***********************
+     * DELETE POST (ADMIN)
+     ***********************/
+    async function deletePost(postID) {
+      const token = (adminTokenEl.value || "").trim();
+
+      if (!token) {
+        setAdminStatus("Please paste your admin token first.", "warn");
+        return;
+      }
+
+      const ok = confirm("Delete this post permanently?");
+      if (!ok) return;
+
+      try {
+        setAdminStatus("Deleting post...", "neutral");
+
+        const res = await fetch(`${POSTS_URL}/${encodeURIComponent(postID)}`, {
+          method: "DELETE",
+          headers: {
+            "X-Admin-Token": token
+          }
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          console.error("Delete failed:", res.status, data);
+          setAdminStatus(`Delete failed (${res.status}). Check token / API settings.`, "bad");
+          return;
+        }
+
+        setAdminStatus("Post deleted ✅", "good");
+
+        // if modal open, close it
+        if (openPost && openPost.postID === postID) closePostModal();
+
+        // refresh list from page 1
+        nextToken = null;
+        loadMoreBtn.style.display = "none";
+        await loadPosts({ append: false });
+      } catch (err) {
+        console.error("Delete error:", err);
+        setAdminStatus("Network error while deleting. Please try again.", "bad");
+      }
+    }
+
+    // delete from modal (admin only)
+    modalDeleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!openPost?.postID) return;
+      deletePost(openPost.postID);
+    });
+
+    /***********************
+     * INIT
+     ***********************/
+    updateAdminUI();
+    loadPosts({ append: false });
+  </script>
+</body>
+</html>
