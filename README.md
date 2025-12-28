@@ -4,7 +4,7 @@ This project is a serverless web platform built on AWS, designed to demonstrate 
 
 **Architecture Overview**
 
-![Serverless Blog Platform Architecture](images/severless-blog-architecture.png)
+![Serverless Blog Architecture](images/serverless-blog-architecture.png)
 
 
 **Frontend Architecture (Live)**
