@@ -1,4 +1,4 @@
-**Serverless Blog Platform (AWS)**
+## Serverless Blog Platform (AWS)
 
 This project is a serverless web platform built on AWS, designed to demonstrate scalable frontend delivery, backend API architecture, and CI/CD automation using modern cloud best practices.
 
@@ -7,11 +7,11 @@ This project is a serverless web platform built on AWS, designed to demonstrate 
 
 
 
-**Frontend Architecture (Live)**
+## Frontend Architecture (Live)
 
 The frontend is a static web application hosted on AWS and globally distributed.
 
-**Services Used:**
+## Services Used:
 
 **Amazon S3** – Hosts the static frontend (index.html)
 
@@ -19,18 +19,18 @@ The frontend is a static web application hosted on AWS and globally distributed.
 
 **GitHub Actions** – CI/CD pipeline for automated deployment
 
-**Flow:**
+## Flow:
 
 1. User accesses the site via CloudFront
 2. CloudFront fetches content from S3
 3. Static assets are cached and delivered globally
 4. On updates, CloudFront cache is invalidated automatically
 
-**Backend Architecture (Designed & Provisioned)**
+## Backend Architecture (Designed & Provisioned)
 
 The backend is designed to support dynamic blog content and admin operations using a fully serverless model.
 
-**Services:**
+## Services:
 
 **Amazon API Gateway** – REST API layer
 
@@ -40,7 +40,7 @@ The backend is designed to support dynamic blog content and admin operations usi
 
 **AWS IAM** – Secure role-based permissions
 
-**Intended Flow:**
+## Intended Flow:
 
 1. Frontend sends HTTP requests to API Gateway
 2. API Gateway routes requests to Lambda functions
@@ -49,11 +49,11 @@ The backend is designed to support dynamic blog content and admin operations usi
 
 Backend services are provisioned and tested independently and are currently being integrated into the frontend.
 
-**CI/CD Pipeline (Implemented)**
+## CI/CD Pipeline (Implemented)
 
 This project includes an automated deployment pipeline using GitHub Actions.
 
-**Pipeline Steps:**
+## Pipeline Steps:
 
 1. Code is pushed to the main branch
 2. GitHub Actions workflow is triggered
@@ -61,21 +61,21 @@ This project includes an automated deployment pipeline using GitHub Actions.
 4. Frontend files are synced to S3
 5. CloudFront cache is invalidated to reflect changes instantly
    
-**Technologies:**
+## Technologies:
 
 * GitHub Actions
 * AWS CLI
 * S3 sync
 * CloudFront invalidation
 
-**Security & Access Control**
+## Security & Access Control
 
 * AWS credentials are stored securely using GitHub Repository Secrets
 * IAM roles follow least privilege access
 * CloudFront restricts direct S3 access
 * No secrets are exposed in the repository
 
-**Project Roadmap**
+## Project Roadmap
 
 * Static frontend deployment (S3 + CloudFront)
 * CI/CD pipeline with GitHub Actions
@@ -87,5 +87,10 @@ This project includes an automated deployment pipeline using GitHub Actions.
 * Admin management endpoints
 
 This project demonstrates how to design, deploy, and evolve a full-stack serverless architecture using AWS, following production-grade practices and incremental delivery.
+
+## 🚀 Live Demo
+**Live URL:** https://d8r65ba7hgqkb.cloudfront.net/
+
+
 
 
