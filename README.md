@@ -95,6 +95,9 @@ This project demonstrates how to design, deploy, and evolve a full-stack serverl
 **Reader's-Page**
 ![User-Page](https://github.com/TempleInCloud/cloud-with-temple/blob/ca7029e4d29e38d5b39e719e69c5cb51e06fbfbc/User-Page)
 
+**Admin's-Page**
+![Admins-Page](https://github.com/TempleInCloud/cloud-with-temple/blob/937de535f2ddc2f220403c69ce05d7bb5e83aaf0/Admin-Page)
+
 
 
 
