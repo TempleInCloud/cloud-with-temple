@@ -4,7 +4,7 @@ This project is a serverless web platform built on AWS, designed to demonstrate 
 
 **Architecture Overview**
 
-![Serverless Blog Architecture](images/serverless-blog-architecture.png)
+
 
 
 **Frontend Architecture (Live)**
@@ -14,7 +14,9 @@ The frontend is a static web application hosted on AWS and globally distributed.
 **Services Used:**
 
 **Amazon S3** – Hosts the static frontend (index.html)
+
 **Amazon CloudFront** – Global CDN for fast, secure delivery
+
 **GitHub Actions** – CI/CD pipeline for automated deployment
 
 **Flow:**
@@ -31,8 +33,11 @@ The backend is designed to support dynamic blog content and admin operations usi
 **Services:**
 
 **Amazon API Gateway** – REST API layer
+
 **AWS Lambda** – Serverless business logic
+
 **Amazon DynamoDB** – NoSQL database for storing blog posts
+
 **AWS IAM** – Secure role-based permissions
 
 **Intended Flow:**
