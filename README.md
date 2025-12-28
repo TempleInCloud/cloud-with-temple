@@ -2,8 +2,8 @@
 
 This project is a serverless web platform built on AWS, designed to demonstrate scalable frontend delivery, backend API architecture, and CI/CD automation using modern cloud best practices.
 
-**Architecture Overview**
 
+![Serverless Blog Architecture](https://github.com/TempleInCloud/cloud-with-temple/blob/94650b461ecda1a568747794676ede9fdf3b557d/severless%20blog.drawio%20(1).png)
 
 
 
