@@ -2,8 +2,9 @@
 
 This project is a serverless web platform built on AWS, designed to demonstrate scalable frontend delivery, backend API architecture, and CI/CD automation using modern cloud best practices.
 
-**Architecture**
+**Architecture Overview**
 
+![Serverless Blog Platform Architecture](images/severless-blog-architecture.png)
 
 
 **Frontend Architecture (Live)**
